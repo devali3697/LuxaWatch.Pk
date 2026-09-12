@@ -1,0 +1,1 @@
+import type {Metadata} from "next";export const metadata:Metadata={title:"Contact Us | 1ClickMela Customer Support",description:"Contact 1ClickMela for order support, product information, returns and custom product requests across Pakistan.",alternates:{canonical:"/contact"}};export default function Layout({children}:{children:React.ReactNode}){return children}

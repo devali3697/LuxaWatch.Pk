@@ -1,0 +1,3 @@
+import { ArrowRight } from "lucide-react";
+
+export default function ComingSoon(){return <main className="coming-page"><header><a href="/" className="logo"><b>1</b><span>Click<span>Mela</span></span></a><span>Launching soon</span></header><section><img src="/hero-campaign-v2.png" alt="1ClickMela launch collection"/><div><p>Pakistan&apos;s next shopping destination</p><h1>Everything you love.<br/><em>One click away.</em></h1><span>Beauty, fashion, technology, home and more—together in one thoughtfully designed marketplace.</span><a href="/">Preview the store <ArrowRight size={17}/></a></div></section></main>}
