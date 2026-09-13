@@ -1,62 +1,50 @@
 "use client";
 import Link from "next/link";
-import {useEffect,useState,type CSSProperties} from "react";
-import {ArrowRight,ChevronLeft,ChevronRight,ShieldCheck,ShoppingBag,Truck,Undo2,Zap} from "lucide-react";
-import {useCatalog} from "@/components/storefront/catalog-provider";
-import {PageShell} from "@/components/storefront/site-shell";
-import {Catalog} from "@/components/storefront/catalog";
+import {useState} from "react";
+import {ArrowRight,Box,ChevronLeft,ChevronRight,CircleUserRound,CreditCard,Diamond,Headphones,Heart,Menu,RotateCcw,Search,ShieldCheck,ShoppingCart,Truck,X} from "lucide-react";
 
-function Countdown({endsAt}:{endsAt:string}){
- const [left,setLeft]=useState(0);
- useEffect(()=>{const tick=()=>setLeft(Math.max(0,new Date(endsAt).getTime()-Date.now()));tick();const id=setInterval(tick,1000);return()=>clearInterval(id)},[endsAt]);
- const h=Math.floor(left/3600000),m=Math.floor(left/60000)%60,s=Math.floor(left/1000)%60;
- return <div className="countdown"><span>Ends in:</span>{[[h,"Hrs"],[m,"Min"],[s,"Sec"]].map(([v,l])=><b key={l}><strong>{String(v).padStart(2,"0")}</strong><small>{l}</small></b>)}</div>
-}
+const categories=[
+ ["Men's Watches","https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=300&q=85"],
+ ["Women's Watches","https://images.unsplash.com/photo-1539874754764-5a96559165b0?auto=format&fit=crop&w=300&q=85"],
+ ["Smart Watches","https://images.unsplash.com/photo-1579586337278-3befd40fd17a?auto=format&fit=crop&w=300&q=85"],
+ ["Luxury Watches","https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=300&q=85"],
+ ["Sports Watches","https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?auto=format&fit=crop&w=300&q=85"],
+ ["Classic Watches","https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=300&q=85"],
+ ["Accessories","https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?auto=format&fit=crop&w=300&q=85"],
+ ["New Arrivals","https://images.unsplash.com/photo-1508057198894-247b23fe5ade?auto=format&fit=crop&w=300&q=85"]
+] as const;
+const brands=["ROLEX","TISSOT","SEIKO","CASIO","FOSSIL","CITIZEN","TIMEX","EMPORIO ARMANI"];
+const watches=[
+ {brand:"Rolex",name:"Datejust 41",price:"Rs. 2,450,000",reviews:24,image:"https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=640&q=90"},
+ {brand:"Tissot",name:"PRX Powermatic 80",price:"Rs. 185,000",reviews:18,image:"https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=640&q=90"},
+ {brand:"Casio",name:"Edifice Chronograph",price:"Rs. 42,000",reviews:42,image:"https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=640&q=90"},
+ {brand:"Fossil",name:"Grant Chronograph",price:"Rs. 38,500",reviews:36,image:"https://images.unsplash.com/photo-1594534475808-b18fc33b045e?auto=format&fit=crop&w=640&q=90"},
+ {brand:"Citizen",name:"Eco-Drive",price:"Rs. 95,000",reviews:29,image:"https://images.unsplash.com/photo-1612817159949-195b6eb9e31a?auto=format&fit=crop&w=640&q=90"}
+];
+const arrivals=[
+ {brand:"Armani Exchange",name:"Chronograph",price:"Rs. 48,000",image:"https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?auto=format&fit=crop&w=640&q=90"},
+ {brand:"Michael Kors",name:"Parker",price:"Rs. 52,000",image:"https://images.unsplash.com/photo-1539874754764-5a96559165b0?auto=format&fit=crop&w=640&q=90"},
+ {brand:"Samsung",name:"Galaxy Watch 6",price:"Rs. 89,000",image:"https://images.unsplash.com/photo-1579586337278-3befd40fd17a?auto=format&fit=crop&w=640&q=90"},
+ {brand:"Seiko",name:"5 Sports",price:"Rs. 78,000",image:"https://images.unsplash.com/photo-1508057198894-247b23fe5ade?auto=format&fit=crop&w=640&q=90"},
+ {brand:"Daniel Wellington",name:"Classic",price:"Rs. 46,000",image:"https://images.unsplash.com/photo-1622434641406-a158123450f9?auto=format&fit=crop&w=640&q=90"}
+];
 
-function SectionHeading({title,href,label}:{title:string;href:string;label:string}){return <div className="section-title"><h2>{title}</h2><Link href={href}>{label}<ArrowRight/></Link></div>}
+function Logo(){return <Link className="lux-logo" href="/" aria-label="Luxe Watch home"><img src="/luxe-watch-logo.jpg" alt="Luxe Watch.pk"/><span><strong>LUXE WATCH.pk</strong><small>TIME DEFINES YOU</small></span></Link>}
+function ProductCard({watch,isNew=false}:{watch:(typeof watches)[number]|(typeof arrivals)[number];isNew?:boolean}){const[liked,setLiked]=useState(false);return <article className="lux-product-card"><div className="lux-product-image">{isNew&&<b>NEW</b>}<button onClick={()=>setLiked(!liked)} aria-label={liked?"Remove from wishlist":"Add to wishlist"} className={liked?"liked":""}><Heart fill={liked?"currentColor":"none"}/></button><Link href="/product/casio-classic-leather-watch"><img src={watch.image} alt={`${watch.brand} ${watch.name}`} loading="lazy"/></Link></div><div className="lux-product-info"><strong>{watch.brand}</strong><p>{watch.name}</p>{"reviews" in watch&&<span className="lux-stars">★★★★★ <small>({watch.reviews})</small></span>}<div><b>{watch.price}</b><button aria-label={`Add ${watch.name} to cart`}><ShoppingCart/></button></div></div></article>}
 
-export default function Home(){
- const {catalog:store}=useCatalog();
- const [slide,setSlide]=useState(0);
- useEffect(()=>{const id=setInterval(()=>setSlide(x=>(x+1)%store.heroSlides.length),5500);return()=>clearInterval(id)},[]);
- const best=store.products.filter(p=>p.section.includes("best")).slice(0,6);
- const newest=store.products.filter(p=>p.section.includes("new")).slice(0,6);
- return <PageShell>
-  <section className="hero">
-   {store.heroSlides.map((x,i)=><article className={i===slide?"active":""} key={x.id}><img src={x.image} alt=""/><div><h1>{i===0?<>Everything You Love.<br/>One Click Away.</>:x.title}</h1><p>{i===0?"Fashion, beauty, tech, home & more — delivered to your doorsteps across Pakistan.":x.text}</p><Link href={x.href}>{i===0?"Shop the Mela":x.cta}<ArrowRight/></Link></div></article>)}
-   <button className="hero-prev" onClick={()=>setSlide((slide-1+store.heroSlides.length)%store.heroSlides.length)} aria-label="Previous banner"><ChevronLeft/></button><button className="hero-next" onClick={()=>setSlide((slide+1)%store.heroSlides.length)} aria-label="Next banner"><ChevronRight/></button>
-  </section>
-
-  <section className="section category-section">
-   <SectionHeading title="Shop by Category" href="/search" label="View All Categories"/>
-   <div className="category-grid">{store.categories.map(c=><Link href={`/category/${c.slug}`} key={c.id}><div><img src={c.image} alt={c.name}/><i>Explore <ArrowRight/></i></div><h3>{c.name}</h3></Link>)}</div>
-  </section>
-
-  <section className="custom-order-feature section"><div><span>EXCLUSIVE 1CLICKMELA SERVICE</span><h2>Can’t find the product you want?</h2><p>Share the product link, pictures or store location. Our sourcing team will find it and send you a price quote.</p><Link href="/custom-order">Order a Custom Product <ArrowRight/></Link></div><div className="custom-product-stack">{store.products.slice(0,3).map((p,i)=><img style={{"--i":i} as CSSProperties} src={p.image} alt="" key={p.id}/>)}</div></section>
-
-  <section className="section flash" id="flash">
-   <div className="deal-heading"><h2>Flash Deals</h2><Countdown endsAt={store.dealEndsAt}/><Link href="/search?q=best">View All Deals <ArrowRight/></Link></div>
-   <Catalog products={store.products.filter(p=>p.section.includes("flash")).slice(0,6)}/>
-  </section>
-
-  <section className="promo section">
-   <Link href="/category/fashion"><img src="/promo-fashion.png" alt="Summer fashion"/><div><h2>Summer Style<br/>Starts Here</h2><p>Fresh looks for every occasion.</p><b>Explore Fashion <ArrowRight/></b></div></Link>
-   <Link href="/category/beauty"><img src="/promo-beauty.png" alt="Beauty products"/><div><h2>Glow Up<br/>Every Day</h2><p>Premium beauty & personal care picks.</p><b>Shop Beauty <ArrowRight/></b></div></Link>
-  </section>
-
-  <section className="section product-shelf"><SectionHeading title="Best Sellers" href="/search?q=best" label="View All Best Sellers"/><Catalog products={best}/></section>
-
-  <section className="brands section" id="brands"><SectionHeading title="Shop by Brand" href="/brands" label="View All Brands"/><div>{store.brands.map(b=><Link href={`/search?q=${encodeURIComponent(b.name)}`} key={b.name}><img src={b.logo} alt={`${b.name} logo`} loading="lazy"/><span>{b.tagline}</span></Link>)}</div></section>
-
-  <section className="section product-shelf"><SectionHeading title="New Arrivals" href="/search?q=new" label="View All New Arrivals"/><Catalog products={newest}/></section>
-
-  <section className="trust section"><div><ShieldCheck/><span><b>100% Genuine Products</b><small>Sourced from trusted brands</small></span></div><div><ShoppingBag/><span><b>Cash on Delivery</b><small>Pay when you receive</small></span></div><div><Truck/><span><b>Fast Delivery</b><small>Across Pakistan</small></span></div><div><Undo2/><span><b>Easy Returns</b><small>7-day return policy</small></span></div></section>
-
-  <section className="guides section"><SectionHeading title="Buying Guides" href="/search" label="View All Guides"/><div className="guide-grid">
-   <Link href="/category/beauty"><img src="/promo-beauty.png" alt="Skincare guide"/><span><b>How to Choose the<br/>Perfect Skincare Routine</b><small>Read Guide <ArrowRight/></small></span></Link>
-   <Link href="/category/home-living"><img src="/hero-home-tech.png" alt="Smart home guide"/><span><b>Smart Home Essentials<br/>for Every Room</b><small>Read Guide <ArrowRight/></small></span></Link>
-   <Link href="/category/fashion"><img src="/promo-fashion.png" alt="Summer fashion guide"/><span><b>Summer Fashion<br/>Must-Haves for Men</b><small>Read Guide <ArrowRight/></small></span></Link>
-   <Link href="/category/electronics"><img src={store.products[1].image} alt="Fitness gear guide"/><span><b>Fitness Gear<br/>That Actually Works</b><small>Read Guide <ArrowRight/></small></span></Link>
-  </div></section>
- </PageShell>
-}
+export default function Home(){const[mobileOpen,setMobileOpen]=useState(false),[tab,setTab]=useState("Best Sellers");return <div className="luxe-site">
+ <div className="lux-topbar"><span><Truck/> Free Delivery Across Pakistan</span><span><ShieldCheck/> 100% Original Products</span><span><CreditCard/> Cash on Delivery Available</span></div>
+ <header className="lux-header"><Logo/><form className="lux-search"><input aria-label="Search watches" placeholder="Search for watches, brands, models..."/><button aria-label="Search"><Search/></button></form><div className="lux-actions"><Link href="/account"><CircleUserRound/><span>Account<small>Sign In</small></span></Link><Link href="/wishlist"><Heart/><span>Wishlist<small>Sign In</small></span><b>0</b></Link><Link href="/cart"><ShoppingCart/><span>Cart<small>0 Cart</small></span><b>0</b></Link></div><button className="lux-menu-button" onClick={()=>setMobileOpen(true)} aria-label="Open navigation"><Menu/></button></header>
+ <nav className={`lux-nav ${mobileOpen?"open":""}`} aria-label="Main navigation"><button onClick={()=>setMobileOpen(false)} aria-label="Close navigation"><X/></button>{[["HOME","/"],["SHOP","/search"],["BRANDS","/brands"],["MEN","/category/fashion"],["WOMEN","/category/fashion"],["SMART WATCHES","/category/electronics"],["LUXURY","/search?q=luxury"],["BESTSELLERS","/search?q=best"],["NEW ARRIVALS","/search?q=new"],["ACCESSORIES","/category/accessories"],["DEALS","/search?q=deal"]].map(([label,href])=><Link onClick={()=>setMobileOpen(false)} key={label} href={href}>{label}</Link>)}</nav>
+ <main>
+  <section className="lux-hero"><img src="/luxe-hero.png" alt="Black luxury chronograph watch"/><div className="lux-hero-copy"><span>LUXE WATCH.PK</span><h1>More Than Time<br/>A Lifestyle</h1><p>Discover authentic watches for every moment.<br/>Premium brands. Trusted quality. Delivered across Pakistan.</p><Link href="/search">Shop Now <ArrowRight/></Link></div><div className="lux-hero-trust"><span><ShieldCheck/><b>100% Original<small>Guaranteed</small></b></span><span><Truck/><b>Free Delivery<small>Across Pakistan</small></b></span><span><RotateCcw/><b>Easy Returns<small>7 Days</small></b></span><span><CreditCard/><b>Secure Payments<small>All Major Cards</small></b></span></div></section>
+  <section className="lux-categories lux-container">{categories.map(([name,image])=><Link href="/search" key={name}><span><img src={image} alt={name}/></span><b>{name}</b></Link>)}</section>
+  <section className="lux-section lux-container"><div className="lux-section-head"><h2>Top Watch Brands</h2><Link href="/brands">View All Brands <ArrowRight/></Link></div><div className="lux-brands">{brands.map(brand=><Link href={`/search?q=${encodeURIComponent(brand)}`} key={brand}>{brand}</Link>)}<button aria-label="Next brands"><ChevronRight/></button></div></section>
+  <section className="lux-section lux-container"><div className="lux-section-head lux-products-head"><h2>Featured Watches</h2><div className="lux-tabs">{["Best Sellers","New Arrivals","Men","Women","Luxury"].map(x=><button className={tab===x?"active":""} onClick={()=>setTab(x)} key={x}>{x}</button>)}<button aria-label="Previous products"><ChevronLeft/></button><button aria-label="Next products"><ChevronRight/></button></div></div><div className="lux-product-grid">{watches.map(w=><ProductCard key={w.brand} watch={w}/>)}</div></section>
+  <section className="lux-campaigns lux-container"><article><img src="/luxe-men-banner.png" alt="Men's luxury watch collection"/><div><span>FOR HIM</span><h2>Bold Designs.<br/>Bigger Stories.</h2><Link href="/category/fashion">Shop Men's Watches <ArrowRight/></Link></div></article><article className="light"><img src="/luxe-women-banner.png" alt="Women's rose gold watch collection"/><div><span>FOR HER</span><h2>Elegance in<br/>Every Moment.</h2><Link href="/category/fashion">Shop Women's Watches <ArrowRight/></Link></div></article></section>
+  <section className="lux-benefits lux-container"><div><Diamond/><span><b>100% Authentic</b><small>Original Products Only</small></span></div><div><Truck/><span><b>Free Delivery</b><small>All Over Pakistan</small></span></div><div><Headphones/><span><b>Customer Support</b><small>Dedicated Support</small></span></div><div><Box/><span><b>Easy Returns</b><small>7 Days Hassle Free</small></span></div><div><CreditCard/><span><b>Secure Payments</b><small>Card & COD</small></span></div></section>
+  <section className="lux-section lux-container"><div className="lux-section-head"><h2>New Arrivals</h2><Link href="/search?q=new">View All <ArrowRight/></Link></div><div className="lux-product-grid">{arrivals.map(w=><ProductCard key={w.brand} watch={w} isNew/>)}</div></section>
+  <section className="lux-newsletter"><div className="lux-container"><div><h2>Be First to Know</h2><p>Get exclusive deals, new arrivals and special offers.</p></div><form><input type="email" aria-label="Email address" placeholder="Enter your email address" required/><button>Subscribe</button></form></div></section>
+ </main>
+ <footer className="lux-footer"><div className="lux-container lux-footer-grid"><div><Logo/><p>Premium watches for modern lifestyles. 100% original products, delivered across Pakistan.</p><div className="lux-social">f&nbsp;&nbsp;◎&nbsp;&nbsp;♪&nbsp;&nbsp;▶</div></div><div><h3>Shop</h3>{["All Watches","Men's Watches","Women's Watches","Smart Watches","Luxury Watches","Accessories","Deals"].map(x=><Link href="/search" key={x}>{x}</Link>)}</div><div><h3>Help</h3>{["Track Order","Shipping Policy","Return & Refund","FAQs","Size Guide","Contact Us"].map(x=><Link href="/help" key={x}>{x}</Link>)}</div><div><h3>About</h3>{["Our Story","Why Choose Us","Authenticity","Terms & Conditions","Privacy Policy"].map(x=><Link href="/terms" key={x}>{x}</Link>)}</div><div><h3>Download App</h3><button>▶ Get it on<br/><b>Google Play</b></button><button>● Download on the<br/><b>App Store</b></button></div></div><div className="lux-footer-bottom lux-container"><span>© 2026 Luxe Watch.pk. All rights reserved.</span><span>Designed for a Timeless Tomorrow.</span></div></footer>
+ </div>}
